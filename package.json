@@ -1,0 +1,20 @@
+{
+  "name": "520-interactive-confession-page",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A mobile-first configurable 520 interactive confession page.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "latest",
+    "lucide-react": "latest",
+    "lz-string": "^1.5.0",
+    "react": "latest",
+    "react-dom": "latest",
+    "vite": "latest"
+  }
+}
