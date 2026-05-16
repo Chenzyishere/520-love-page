@@ -21,6 +21,7 @@ import { loveConfig } from './love.config';
 const steps = ['hero', 'memories', 'collect', 'letter'];
 const storageKey = 'love-page-config-v2';
 const shareParam = 'c';
+const viewParam = 'view';
 
 const text = {
   openPanel: '\u6253\u5f00\u914d\u7f6e\u9762\u677f',
@@ -198,6 +199,7 @@ const decodeConfig = (value) => {
 };
 
 function App() {
+  const [isShareView] = useState(() => new URLSearchParams(window.location.search).has(shareParam));
   const [config, setConfig] = useState(loveConfig);
   const [currentStep, setCurrentStep] = useState('hero');
   const [activeMemory, setActiveMemory] = useState(0);
@@ -329,6 +331,7 @@ function App() {
   const createShareUrl = () => {
     const url = new URL(window.location.href);
     url.searchParams.set(shareParam, encodeConfig(config));
+    url.searchParams.set(viewParam, '1');
     const nextUrl = url.toString();
     setShareUrl(nextUrl);
     copyShareUrl(nextUrl);
@@ -338,6 +341,7 @@ function App() {
     localStorage.removeItem(storageKey);
     const cleanUrl = new URL(window.location.href);
     cleanUrl.searchParams.delete(shareParam);
+    cleanUrl.searchParams.delete(viewParam);
     window.history.replaceState({}, '', cleanUrl);
     setConfig(loveConfig);
     setCollected([]);
@@ -409,10 +413,10 @@ function App() {
   }, [config.site.title]);
 
   useEffect(() => {
-    if (hasHydrated) {
+    if (hasHydrated && !isShareView) {
       localStorage.setItem(storageKey, JSON.stringify(config));
     }
-  }, [config, hasHydrated]);
+  }, [config, hasHydrated, isShareView]);
 
   useEffect(() => {
     setShareUrl('');
@@ -427,42 +431,46 @@ function App() {
 
   return (
     <main className="page-shell" style={themeStyle}>
-      <button
-        className="config-toggle"
-        type="button"
-        aria-label={configPanelOpen ? text.closePanel : text.openPanel}
-        onClick={() => setConfigPanelOpen((value) => !value)}
-      >
-        {configPanelOpen ? <X size={18} /> : <Settings size={18} />}
-      </button>
+      {!isShareView && (
+        <>
+          <button
+            className="config-toggle"
+            type="button"
+            aria-label={configPanelOpen ? text.closePanel : text.openPanel}
+            onClick={() => setConfigPanelOpen((value) => !value)}
+          >
+            {configPanelOpen ? <X size={18} /> : <Settings size={18} />}
+          </button>
 
-      <ConfigSidebar
-        activeMemory={activeMemory}
-        config={config}
-        floatingNotes={floatingNotes}
-        isOpen={configPanelOpen}
-        memories={memories}
-        shareCopied={shareCopied}
-        shareUrl={shareUrl}
-        onAddMemory={addMemory}
-        onClose={() => setConfigPanelOpen(false)}
-        onCopyShareUrl={() => copyShareUrl(shareUrl)}
-        onCreateShareUrl={createShareUrl}
-        onExport={exportConfig}
-        onRemoveMemory={removeMemory}
-        onReset={resetConfig}
-        onSelectMemory={setActiveMemory}
-        onUpdateMemory={updateMemory}
-        onUpdateSection={updateSection}
-        onUpdateWords={(value) => {
-          updateSection('collectSection', 'words', splitWords(value));
-          setCollected([]);
-          setCurrentStep('collect');
-        }}
-      />
+          <ConfigSidebar
+            activeMemory={activeMemory}
+            config={config}
+            floatingNotes={floatingNotes}
+            isOpen={configPanelOpen}
+            memories={memories}
+            shareCopied={shareCopied}
+            shareUrl={shareUrl}
+            onAddMemory={addMemory}
+            onClose={() => setConfigPanelOpen(false)}
+            onCopyShareUrl={() => copyShareUrl(shareUrl)}
+            onCreateShareUrl={createShareUrl}
+            onExport={exportConfig}
+            onRemoveMemory={removeMemory}
+            onReset={resetConfig}
+            onSelectMemory={setActiveMemory}
+            onUpdateMemory={updateMemory}
+            onUpdateSection={updateSection}
+            onUpdateWords={(value) => {
+              updateSection('collectSection', 'words', splitWords(value));
+              setCollected([]);
+              setCurrentStep('collect');
+            }}
+          />
 
-      {configPanelOpen && (
-        <button className="config-scrim" type="button" aria-label={text.closePanel} onClick={() => setConfigPanelOpen(false)} />
+          {configPanelOpen && (
+            <button className="config-scrim" type="button" aria-label={text.closePanel} onClick={() => setConfigPanelOpen(false)} />
+          )}
+        </>
       )}
 
       <div className="step-progress" aria-label={text.progress}>
