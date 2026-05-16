@@ -4,12 +4,6 @@ export const loveConfig = {
     dateText: '05.20',
     receiverName: '特别的你',
   },
-  support: {
-    enabled: true,
-    label: '支持作者',
-    note: '如果这个小工具帮到了你，可以自愿支持作者继续维护。',
-    alipayQr: 'https://chenzyishere.oss-cn-guangzhou.aliyuncs.com/img_for_typora/42d6c08984a779c14b51a6fa214e7c80.png',
-  },
   themePreset: 'rose',
   theme: {
     text: '#34251f',

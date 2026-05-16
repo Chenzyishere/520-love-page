@@ -109,21 +109,6 @@ letter: {
 
 `vite.config.js` 已设置 `base: './'`，适配 GitHub Pages 的仓库子路径。
 
-## 支持作者
-
-可在 `src/love.config.js` 和 `public/love.config.json` 中修改：
-
-```js
-support: {
-  enabled: true,
-  label: '支持作者',
-  note: '如果这个小工具帮到了你，可以自愿支持作者继续维护。',
-  alipayQr: 'https://your-cdn.com/alipay-qr.png',
-}
-```
-
-将 `alipayQr` 设置为你的支付宝收款码图片地址。开源仓库里的 `public/alipay-qr.svg` 只是占位图。
-
 ## 页面内配置面板
 
 页面左上角有配置按钮。点击后会打开侧边栏配置面板，可以实时修改：

@@ -6,7 +6,6 @@ import {
   Download,
   Gift,
   Heart,
-  HeartHandshake,
   Link2,
   Lock,
   Plus,
@@ -32,9 +31,6 @@ const text = {
   share: '\u751f\u6210\u5206\u4eab\u94fe\u63a5',
   copied: '\u5df2\u590d\u5236',
   copy: '\u590d\u5236',
-  support: '\u652f\u6301\u4f5c\u8005',
-  supportNote: '\u5982\u679c\u8fd9\u4e2a\u5c0f\u5de5\u5177\u5e2e\u5230\u4e86\u4f60\uff0c\u53ef\u4ee5\u81ea\u613f\u652f\u6301\u4f5c\u8005\u7ee7\u7eed\u7ef4\u62a4\u3002',
-  alipay: '\u652f\u4ed8\u5b9d',
   savedLocal: '\u5df2\u81ea\u52a8\u4fdd\u5b58\u5230\u672c\u673a',
   baseInfo: '\u57fa\u7840\u4fe1\u606f',
   pageTitle: '\u9875\u9762\u6807\u9898',
@@ -115,12 +111,6 @@ const mergeConfig = (baseConfig, overrideConfig = {}) => ({
   ...baseConfig,
   ...overrideConfig,
   site: { ...baseConfig.site, ...overrideConfig.site },
-  support: {
-    enabled: overrideConfig.support?.enabled ?? baseConfig.support?.enabled,
-    label: overrideConfig.support?.label ?? baseConfig.support?.label,
-    note: overrideConfig.support?.note ?? baseConfig.support?.note,
-    alipayQr: overrideConfig.support?.alipayQr ?? baseConfig.support?.alipayQr,
-  },
   themePreset: overrideConfig.themePreset ?? baseConfig.themePreset ?? 'rose',
   theme: { ...baseConfig.theme, ...overrideConfig.theme },
   hero: { ...baseConfig.hero, ...overrideConfig.hero },
@@ -216,7 +206,6 @@ function App() {
   const [hasHydrated, setHasHydrated] = useState(false);
   const [shareUrl, setShareUrl] = useState('');
   const [shareCopied, setShareCopied] = useState(false);
-  const [supportOpen, setSupportOpen] = useState(false);
 
   const memories = config.memoriesSection.memories;
   const floatingNotes = config.collectSection.words;
@@ -460,7 +449,6 @@ function App() {
         onCopyShareUrl={() => copyShareUrl(shareUrl)}
         onCreateShareUrl={createShareUrl}
         onExport={exportConfig}
-        onOpenSupport={() => setSupportOpen(true)}
         onRemoveMemory={removeMemory}
         onReset={resetConfig}
         onSelectMemory={setActiveMemory}
@@ -475,10 +463,6 @@ function App() {
 
       {configPanelOpen && (
         <button className="config-scrim" type="button" aria-label={text.closePanel} onClick={() => setConfigPanelOpen(false)} />
-      )}
-
-      {supportOpen && (
-        <SupportModal support={config.support} onClose={() => setSupportOpen(false)} />
       )}
 
       <div className="step-progress" aria-label={text.progress}>
@@ -620,7 +604,6 @@ function ConfigSidebar({
   onCopyShareUrl,
   onCreateShareUrl,
   onExport,
-  onOpenSupport,
   onRemoveMemory,
   onReset,
   onSelectMemory,
@@ -653,12 +636,6 @@ function ConfigSidebar({
           {text.reset}
         </button>
       </div>
-      {config.support?.enabled && (
-        <button className="support-panel-link" type="button" onClick={onOpenSupport}>
-          <HeartHandshake size={16} />
-          {config.support.label || text.support}
-        </button>
-      )}
       {shareUrl && (
         <div className="share-box">
           <input readOnly value={shareUrl} aria-label={text.share} />
@@ -773,29 +750,6 @@ function ThemePresetPicker({ selected, onChange }) {
           {preset.name}
         </button>
       ))}
-    </div>
-  );
-}
-
-function SupportModal({ support, onClose }) {
-  return (
-    <div className="support-modal-backdrop" role="dialog" aria-modal="true" aria-label={support?.label || text.support}>
-      <div className="support-modal">
-        <button className="support-close" type="button" aria-label={text.closePanel} onClick={onClose}>
-          <X size={18} />
-        </button>
-        <p className="letter-label">{support?.eyebrow || text.support}</p>
-        <h2>{support?.label || text.support}</h2>
-        <p>{support?.note || text.supportNote}</p>
-        <div className="qr-grid">
-          {support?.alipayQr && (
-            <figure>
-              <img src={support.alipayQr} alt={text.alipay} />
-              <figcaption>{text.alipay}</figcaption>
-            </figure>
-          )}
-        </div>
-      </div>
     </div>
   );
 }
